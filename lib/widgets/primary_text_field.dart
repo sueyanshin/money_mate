@@ -10,6 +10,8 @@ class PrimaryTextField extends StatelessWidget {
     required this.prefixIcon,
     this.suffixIcon,
     this.isPassword = false,
+    this.obscureText = false,
+    this.isEnable = true,
     this.validator,
   });
   final TextEditingController controller;
@@ -18,6 +20,8 @@ class PrimaryTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final bool isPassword;
+  final bool obscureText;
+  final bool isEnable;
   final TextInputType keyboardType = .text;
   final TextInputAction textInputAction = .next;
   final String? Function(String?)? validator;
@@ -25,7 +29,7 @@ class PrimaryTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 4,
+      spacing: 8,
       crossAxisAlignment: .start,
       children: [
         Text(
@@ -35,8 +39,9 @@ class PrimaryTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           textInputAction: textInputAction,
-          obscureText: false,
+          obscureText: obscureText,
           keyboardType: keyboardType,
+          enabled: isEnable,
           maxLines: 1,
           decoration: InputDecoration(
             floatingLabelBehavior: .always,

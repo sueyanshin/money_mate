@@ -27,6 +27,7 @@ class App extends StatelessWidget {
         child: Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
         child: Row(

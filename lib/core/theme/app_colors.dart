@@ -20,7 +20,8 @@ class AppColors {
   static const Color onSecondaryContainer = Color(0xFF115E59);
 
   // Surface & Canvas (Light Theme)
-  static const Color surface = Color(0xFFF8FAFC);
+  // static const Color surface = Color(0xFFF8FAFC);
+  static const Color surface = Color(0xFFF8F9FF);
   static const Color surfaceContainerLowest = Color(0xFFFFFFFF);
   static const Color surfaceContainerLow = Color(0xFFF1F5F9);
   static const Color surfaceContainer = Color(0xFFE2E8F0);
