@@ -7,12 +7,17 @@ class PrimaryTextField extends StatelessWidget {
     required this.controller,
     required this.label,
     required this.hint,
-    required this.prefixIcon,
+    this.prefixIcon,
     this.suffixIcon,
     this.isPassword = false,
     this.obscureText = false,
     this.isEnable = true,
+    this.readOnly = false,
+    this.maxLines = 1,
     this.validator,
+    this.keyboardType = .text,
+    this.textInputAction = .next,
+    this.onTap,
   });
   final TextEditingController controller;
   final String label;
@@ -22,8 +27,11 @@ class PrimaryTextField extends StatelessWidget {
   final bool isPassword;
   final bool obscureText;
   final bool isEnable;
-  final TextInputType keyboardType = .text;
-  final TextInputAction textInputAction = .next;
+  final int maxLines;
+  final bool readOnly;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
+  final void Function()? onTap;
   final String? Function(String?)? validator;
 
   @override
@@ -37,15 +45,18 @@ class PrimaryTextField extends StatelessWidget {
           style: TextStyle(color: AppColors.textMuted, fontWeight: .w600),
         ),
         TextFormField(
+          onTap: onTap,
           controller: controller,
           textInputAction: textInputAction,
           obscureText: obscureText,
           keyboardType: keyboardType,
           enabled: isEnable,
-          maxLines: 1,
+          maxLines: maxLines,
+          readOnly: readOnly,
           decoration: InputDecoration(
             floatingLabelBehavior: .always,
             floatingLabelAlignment: .start,
+
             floatingLabelStyle: TextStyle(fontSize: 20),
             prefixIcon: prefixIcon == null
                 ? null

@@ -20,7 +20,9 @@ class App extends StatelessWidget {
       body: navigationShell,
       floatingActionButtonLocation: .centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.push("/add-transaction");
+        },
         shape: const CircleBorder(),
         tooltip: 'Add new',
         elevation: 0,

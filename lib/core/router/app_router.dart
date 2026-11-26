@@ -5,6 +5,7 @@ import 'package:money_mate/features/auth/pages/signup_page.dart';
 import 'package:money_mate/features/dashboard/home_page.dart';
 import 'package:money_mate/features/profile/profile_page.dart';
 import 'package:money_mate/features/reports/report_page.dart';
+import 'package:money_mate/features/transactions/add_transaction_page.dart';
 import 'package:money_mate/features/transactions/transcations_page.dart';
 import 'package:money_mate/core/router/go_router_refresh_stream.dart';
 import 'package:money_mate/main.dart';
@@ -36,6 +37,10 @@ class AppRouter {
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
+      GoRoute(
+        path: '/add-transaction',
+        builder: (context, state) => AddTransactionPage(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return App(navigationShell: navigationShell);
@@ -70,6 +75,14 @@ class AppRouter {
               ),
             ],
           ),
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: '/add-transaction',
+          //       builder: (context, state) => AddTransactionPage(),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     ],

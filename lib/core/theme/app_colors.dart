@@ -54,6 +54,8 @@ class AppColors {
   static const Color categorySalary = Color(0xFF34D399);
   static const Color categoryInvest = Color(0xFFFBBF24);
 
+  static Color blueBg = Color(0xFF90CAF9).withValues(alpha: 0.2);
+
   // Myanmar Payment Channel Brand Tones
   static const Color kbzPayBlue = Color(0xFF0052CC);
   static const Color cbBankAmber = Color(0xFFD97706);

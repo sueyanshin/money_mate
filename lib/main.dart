@@ -7,8 +7,12 @@ import 'package:money_mate/core/router/app_router.dart';
 import 'package:money_mate/core/theme/app_theme.dart';
 import 'package:money_mate/features/auth/cubit/login_cubit.dart';
 import 'package:money_mate/features/auth/cubit/signup_cubit.dart';
+import 'package:money_mate/features/category/cubit/category_cubit.dart';
+import 'package:money_mate/features/transactions/cubit/add_transaction_cubit.dart';
 import 'package:money_mate/firebase_options.dart';
 import 'package:money_mate/services/auth_service.dart';
+import 'package:money_mate/services/category_service.dart';
+import 'package:money_mate/services/transaction_service.dart';
 import 'package:money_mate/services/user_service.dart';
 
 final sl = GetIt.instance;
@@ -22,7 +26,18 @@ void setupLocator() {
     () => UserService(firestore: sl<FirebaseFirestore>()),
   );
   sl.registerLazySingleton(() => AuthService(firebaseAuth: sl<FirebaseAuth>()));
-
+  sl.registerLazySingleton<CategoryService>(
+    () => CategoryService(
+      auth: sl<FirebaseAuth>(),
+      firestore: sl<FirebaseFirestore>(),
+    ),
+  );
+  sl.registerLazySingleton<TransactionService>(
+    () => TransactionService(
+      firestore: sl<FirebaseFirestore>(),
+      auth: sl<FirebaseAuth>(),
+    ),
+  );
   // Cubit
   sl.registerFactory<SignUpCubit>(
     () => SignUpCubit(
@@ -32,6 +47,12 @@ void setupLocator() {
   );
   sl.registerFactory<LoginCubit>(
     () => LoginCubit(authService: sl<AuthService>()),
+  );
+  sl.registerFactory<CategoryCubit>(
+    () => CategoryCubit(categoryService: sl<CategoryService>()),
+  );
+  sl.registerFactory<AddTransactionCubit>(
+    () => AddTransactionCubit(transactionService: sl<TransactionService>()),
   );
 }
 
