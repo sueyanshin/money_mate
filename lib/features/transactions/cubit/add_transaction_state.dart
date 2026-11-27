@@ -10,7 +10,7 @@ class AddTransactionState extends Equatable {
   final AddTransactionStatus status;
   final String? errorMessage;
 
-  new({
+  const new({
     required this.type,
     required this.selectedCategory,
     required this.dateTime,

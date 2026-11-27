@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:money_mate/core/extensions/snackbar_extension.dart';
 import 'package:money_mate/core/theme/app_colors.dart';
 import 'package:money_mate/features/auth/cubit/login_cubit.dart';
 import 'package:money_mate/features/auth/cubit/login_state.dart';
@@ -54,8 +55,7 @@ class __LoginViewState extends State<_LoginView> {
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginFailure) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+            context.showSnackBar(state.errorMessage);
           }
         },
         builder: (context, state) {

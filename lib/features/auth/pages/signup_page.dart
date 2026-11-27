@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:money_mate/core/extensions/snackbar_extension.dart';
 import 'package:money_mate/core/theme/app_colors.dart';
 import 'package:money_mate/features/auth/cubit/signup_cubit.dart';
 import 'package:money_mate/features/auth/cubit/signup_state.dart';
@@ -61,12 +62,9 @@ class _SignUpFormState extends State<_SignUpForm> {
       body: BlocConsumer<SignUpCubit, SignUpState>(
         listener: (context, state) {
           if (state is SignUpFailure) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+            context.showSnackBar(state.errorMessage);
           } else if (state is SignUpSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Welcome, ${state.user.email}!")),
-            );
+            context.showSnackBar("Welcome, ${state.user.email}!");
           }
         },
         builder: (context, state) {

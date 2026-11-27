@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:money_mate/core/constants/default_categories.dart';
+import 'package:money_mate/core/extensions/snackbar_extension.dart';
 import 'package:money_mate/core/theme/app_colors.dart';
 import 'package:money_mate/features/category/cubit/category_cubit.dart';
 import 'package:money_mate/features/category/cubit/category_state.dart';
 import 'package:money_mate/features/transactions/cubit/add_transaction_cubit.dart';
 import 'package:money_mate/features/transactions/cubit/add_transaction_state.dart';
+import 'package:money_mate/features/transactions/widgets/amount_text_field_card.dart';
+import 'package:money_mate/features/transactions/widgets/category_card.dart';
 import 'package:money_mate/features/transactions/widgets/transaction_type_item.dart';
 import 'package:money_mate/main.dart';
 import 'package:money_mate/models/category_model.dart';
@@ -31,7 +32,7 @@ class AddTransactionPage extends StatelessWidget {
 }
 
 class _AddTransactionView extends StatefulWidget {
-  new({super.key});
+  const new();
 
   @override
   State<_AddTransactionView> createState() => __AddTransactionViewState();
@@ -103,15 +104,12 @@ class __AddTransactionViewState extends State<_AddTransactionView> {
       listener: (context, state) {
         if (state.status == AddTransactionStatus.failure &&
             state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: AppColors.expense,
-            ),
+          context.showSnackBar(
+            state.errorMessage,
+            backgroundColor: AppColors.expense,
           );
         } else if (state.status == AddTransactionStatus.success) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Transaction Saved')));
+          context.showSnackBar("Transaction Saved");
           context.pop();
         }
       },
@@ -185,100 +183,12 @@ class __AddTransactionViewState extends State<_AddTransactionView> {
                   const SizedBox(height: 20),
 
                   // Amount
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: .spaceBetween,
-                            children: [
-                              Text(
-                                'AMOUNT',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: .bold,
-                                ),
-                              ),
-                              Container(
-                                padding: .symmetric(vertical: 4, horizontal: 8),
-                                decoration: BoxDecoration(
-                                  color: isExpense
-                                      ? Colors.red.shade100
-                                      : Colors.green.shade100,
-                                  borderRadius: .circular(20),
-                                ),
-                                child: Text(
-                                  isExpense ? 'Cash Outflow' : 'Cash Inflow',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: .bold,
-                                    color: isExpense
-                                        ? Colors.red.shade900
-                                        : Colors.green.shade900,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            controller: _amountController,
-                            autofocus: true,
-                            textAlign: .center,
-                            maxLength: 13,
-                            maxLines: 1,
-                            keyboardType: .numberWithOptions(decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d+\.?\d{0,2}'),
-                              ),
-                            ],
-                            textInputAction: .done,
-                            style: TextStyle(fontSize: 30, fontWeight: .bold),
-
-                            decoration: InputDecoration(
-                              floatingLabelBehavior: .always,
-                              prefixText: 'MMK',
-                              prefixStyle: TextStyle(
-                                color: AppColors.textMuted,
-                                fontSize: 20,
-                              ),
-                              hintText: "10000",
-                              hintStyle: TextStyle(
-                                fontSize: 30,
-                                color: AppColors.textMuted,
-                              ),
-
-                              border: OutlineInputBorder(
-                                borderSide: .none,
-                                borderRadius: .circular(18),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: .none,
-                                borderRadius: .circular(18),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: .none,
-                                borderRadius: .circular(18),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: .none,
-                              ),
-                            ),
-
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter an amount";
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                  AmountTextFieldCard(
+                    isExpense: isExpense,
+                    amountController: _amountController,
                   ),
                   const SizedBox(height: 20),
+
                   // Select Category
                   Row(
                     mainAxisAlignment: .spaceBetween,
@@ -319,88 +229,36 @@ class __AddTransactionViewState extends State<_AddTransactionView> {
                                 : catState.incomeCategories)
                           : [];
 
-                      return SizedBox(
-                        height: 110,
-                        child: ListView.separated(
-                          scrollDirection: .horizontal,
-                          padding: .symmetric(horizontal: 16),
-                          itemCount: categories.length,
-                          separatorBuilder: (_, _) => const SizedBox(width: 12),
-                          itemBuilder: (context, index) {
-                            final category = categories[index];
-                            final isSelected =
-                                category.id == txState.selectedCategory.id;
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              mainAxisExtent: 110,
+                            ),
+                        itemCount: categories.length,
 
-                            return InkWell(
-                              borderRadius: .circular(20),
-                              onTap: () {
-                                context
-                                    .read<AddTransactionCubit>()
-                                    .selectCategory(category);
-                              },
-                              child: AnimatedContainer(
-                                width: 120,
-                                alignment: .center,
-                                duration: Duration(milliseconds: 200),
-                                padding: const EdgeInsets.all(16.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: .circular(20),
-                                  color: isSelected
-                                      ? AppColors.primaryMintAccent.withValues(
-                                          alpha: 0.15,
-                                        )
-                                      : Colors.white,
-                                  border: .all(
-                                    color: isSelected
-                                        ? AppColors.primary
-                                        : AppColors.textMuted,
-                                    width: isSelected ? 1.5 : 1,
-                                  ),
-                                ),
-                                child: Column(
-                                  spacing: 8,
-                                  children: [
-                                    Container(
-                                      padding: .all(8),
-                                      decoration: BoxDecoration(
-                                        // color: Colors.white,
-                                        color: Color(category.colorValue)
-                                            .withValues(alpha: 0.15),
+                        itemBuilder: ((context, index) {
+                          final category = categories[index];
 
-                                        borderRadius: .circular(20),
-                                      ),
-                                      child: Icon(
-                                        category.icon,
-                                        // color: AppColors.primary,
-                                        color: Color(category.colorValue),
-                                      ),
-                                    ),
-                                    Text(
-                                      category.name,
-                                      maxLines: 2,
-                                      overflow: .ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: isSelected ? .bold : .w500,
-                                        color: isSelected
-                                            ? theme
-                                                  .colorScheme
-                                                  .onPrimaryContainer
-                                            : Colors.black87,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                          final isSelected =
+                              category.id == txState.selectedCategory.id;
+
+                          return CategoryCard(
+                            category: category,
+                            isSelected: isSelected,
+                            theme: theme,
+                          );
+                        }),
                       );
                     },
                   ),
 
                   const SizedBox(height: 20),
-                  // Details Info:
+                  // Details Info Textfields:
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
