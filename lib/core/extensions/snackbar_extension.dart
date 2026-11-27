@@ -6,7 +6,13 @@ extension SnackBarX on BuildContext {
     ScaffoldMessenger.of(this)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: backgroundColor),
+        SnackBar(
+          content: Text(message),
+          backgroundColor: backgroundColor,
+          behavior: .floating,
+          margin: const .fromLTRB(16, 0, 16, 16),
+          shape: RoundedRectangleBorder(borderRadius: .circular(12)),
+        ),
       );
   }
 }

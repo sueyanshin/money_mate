@@ -250,7 +250,6 @@ class __AddTransactionViewState extends State<_AddTransactionView> {
                           return CategoryCard(
                             category: category,
                             isSelected: isSelected,
-                            theme: theme,
                           );
                         }),
                       );
